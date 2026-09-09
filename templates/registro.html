@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Registro — Katana Creaciones Web{% endblock %}
+{% block content %}
+<section class="seccion formulario-seccion">
+    <h1>Crear cuenta</h1>
+    <form method="post" class="formulario">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-principal">Registrarse</button>
+    </form>
+</section>
+{% endblock %}

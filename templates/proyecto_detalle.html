@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}{{ proyecto.nombre }} — Katana Creaciones Web{% endblock %}
+{% block content %}
+<section class="banner" style="background: linear-gradient(135deg, #12163A, #5B2A86);">
+    <h1>{{ proyecto.nombre }}</h1>
+</section>
+<section class="seccion detalle">
+    <p class="descripcion">{{ proyecto.descripcion }}</p>
+    {% if proyecto.url_demo %}
+    <div class="cuadro-demo">
+        <iframe src="{{ proyecto.url_demo }}" title="{{ proyecto.nombre }}"
+                loading="lazy" allowfullscreen></iframe>
+    </div>
+    <p><a class="btn-secundario" href="{{ proyecto.url_demo }}" target="_blank" rel="noopener">Abrir en pestaña nueva ↗</a></p>
+    {% else %}
+    <div class="cuadro-demo placeholder">
+        <p>🚧 Pronto agregaremos el demo interactivo de este proyecto.</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

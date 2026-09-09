@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Proyectos — Katana Creaciones Web{% endblock %}
+{% block content %}
+<section class="seccion">
+    <h1>Proyectos</h1>
+    <div class="grid-tarjetas">
+        {% for pr in proyectos %}
+        <div class="tarjeta">
+            {% if pr.imagen %}<img src="{{ pr.imagen.url }}" alt="{{ pr.nombre }}">{% endif %}
+            <h3>{{ pr.nombre }}</h3>
+            <p>{{ pr.descripcion|truncatewords:25 }}</p>
+            <a class="btn-secundario" href="{% url 'proyecto_detalle' pr.slug %}">Ver proyecto</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

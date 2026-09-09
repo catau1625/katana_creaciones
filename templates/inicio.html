@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Inicio — Katana Creaciones Web{% endblock %}
+{% block content %}
+<section class="hero">
+    <h1>Katana <span>Creaciones Web</span></h1>
+    <p>Desarrollo web con el filo de una katana: precisión, elegancia y potencia.</p>
+    <a class="btn-principal" href="{% url 'productos' %}">Ver servicios</a>
+</section>
+
+<section class="seccion">
+    <h2>Nuestros servicios</h2>
+    <div class="grid-tarjetas">
+        {% for p in productos %}
+        <div class="tarjeta">
+            <h3>{{ p.nombre }}</h3>
+            <p>{{ p.descripcion|truncatewords:20 }}</p>
+            <p class="precio">${{ p.precio }} CLP</p>
+            <a class="btn-secundario" href="{% url 'producto_detalle' p.slug %}">Ver más</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="seccion">
+    <h2>Proyectos destacados</h2>
+    <div class="grid-tarjetas">
+        {% for pr in proyectos %}
+        <div class="tarjeta">
+            <h3>{{ pr.nombre }}</h3>
+            <p>{{ pr.descripcion|truncatewords:20 }}</p>
+            <a class="btn-secundario" href="{% url 'proyecto_detalle' pr.slug %}">Explorar</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

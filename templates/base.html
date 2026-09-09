@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Katana Creaciones Web{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <a class="logo" href="{% url 'inicio' %}">⚔️ Katana<span>Creaciones</span></a>
+        <ul class="menu">
+            <li><a href="{% url 'inicio' %}">Inicio</a></li>
+            <li><a href="{% url 'productos' %}">Productos</a></li>
+            <li><a href="{% url 'proyectos' %}">Proyectos</a></li>
+            <li><a href="{% url 'contacto' %}">Contacto</a></li>
+        </ul>
+        <div class="auth">
+            {% if user.is_authenticated %}
+                <a class="btn-perfil" href="{% url 'perfil' %}">👤 Mi Perfil</a>
+                {% if user.is_staff %}<a class="btn-panel" href="{% url 'panel_admin' %}">Panel</a>{% endif %}
+                <a class="btn-logout" href="{% url 'logout' %}">Salir</a>
+            {% else %}
+                <a class="btn-perfil" href="{% url 'login' %}">👤 Ingresar</a>
+                <a class="btn-registro" href="{% url 'registro' %}">Registrarse</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    {% if messages %}
+        <div class="mensajes">
+            {% for message in messages %}<p class="msg-{{ message.tags }}">{{ message }}</p>{% endfor %}
+        </div>
+    {% endif %}
+
+    <main>{% block content %}{% endblock %}</main>
+
+    <footer>
+        <p>© 2026 Katana Creaciones Web — contacto@katanacreacionesweb.cl</p>
+    </footer>
+</body>
+</html>

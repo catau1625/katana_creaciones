@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Mi Perfil — Katana Creaciones Web{% endblock %}
+{% block content %}
+<section class="seccion">
+    <h1>👤 Hola, {{ user.username }}</h1>
+
+    <h2>Mis productos comprados</h2>
+    <table class="tabla">
+        <tr><th>Producto</th><th>Fecha</th><th>Estado</th></tr>
+        {% for c in compras %}
+        <tr>
+            <td><a href="{% url 'producto_detalle' c.producto.slug %}">{{ c.producto.nombre }}</a></td>
+            <td>{{ c.fecha|date:'d/m/Y' }}</td>
+            <td>{% if c.pagado %}✅ Pagado{% else %}⏳ Pendiente{% endif %}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">Aún no has comprado productos.</td></tr>
+        {% endfor %}
+    </table>
+
+    <h2>Mensajes del administrador</h2>
+    {% for m in comentarios %}
+    <div class="tarjeta comentario">
+        <p class="comentario-meta">{{ m.fecha|date:'d/m/Y H:i' }}{% if m.producto %} — sobre <strong>{{ m.producto.nombre }}</strong>{% endif %}</p>
+        <p>{{ m.mensaje }}</p>
+    </div>
+    {% empty %}
+    <p>No tienes mensajes.</p>
+    {% endfor %}
+</section>
+{% endblock %}

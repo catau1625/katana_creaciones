@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Panel de administración{% endblock %}
+{% block content %}
+<section class="seccion">
+    <h1>🛠️ Panel de administración</h1>
+
+    <h2>Productos <a class="btn-chico" href="{% url 'producto_nuevo' %}">+ Nuevo</a></h2>
+    <table class="tabla">
+        <tr><th>Nombre</th><th>Precio</th><th>Activo</th><th></th></tr>
+        {% for p in productos %}
+        <tr>
+            <td>{{ p.nombre }}</td><td>${{ p.precio }}</td>
+            <td>{{ p.activo|yesno:'Sí,No' }}</td>
+            <td><a class="btn-chico" href="{% url 'producto_editar' p.pk %}">Editar</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Proyectos <a class="btn-chico" href="{% url 'proyecto_nuevo' %}">+ Nuevo</a></h2>
+    <table class="tabla">
+        <tr><th>Nombre</th><th>URL demo</th><th></th></tr>
+        {% for pr in proyectos %}
+        <tr>
+            <td>{{ pr.nombre }}</td><td>{{ pr.url_demo|default:'—' }}</td>
+            <td><a class="btn-chico" href="{% url 'proyecto_editar' pr.pk %}">Editar</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Acciones rápidas</h2>
+    <p>
+        <a class="btn-secundario" href="{% url 'comentario_nuevo' %}">💬 Enviar comentario a cliente</a>
+        <a class="btn-secundario" href="{% url 'compra_nueva' %}">🛒 Asociar compra</a>
+        <a class="btn-secundario" href="/admin/">⚙️ Django Admin completo</a>
+    </p>
+
+    <h2>Mensajes de contacto recientes</h2>
+    <table class="tabla">
+        <tr><th>Asunto</th><th>Nombre</th><th>Fecha</th></tr>
+        {% for m in mensajes %}
+        <tr><td>{{ m.asunto }}</td><td>{{ m.nombre }}</td><td>{{ m.fecha|date:'d/m/Y' }}</td></tr>
+        {% empty %}
+        <tr><td colspan="3">Sin mensajes.</td></tr>
+        {% endfor %}
+    </table>
+
+    <h2>Comentarios enviados</h2>
+    <table class="tabla">
+        <tr><th>Cliente</th><th>Producto</th><th>Mensaje</th><th>Fecha</th></tr>
+        {% for c in comentarios %}
+        <tr><td>{{ c.cliente.username }}</td><td>{{ c.producto|default:'—' }}</td>
+            <td>{{ c.mensaje|truncatewords:10 }}</td><td>{{ c.fecha|date:'d/m/Y' }}</td></tr>
+        {% endfor %}
+    </table>
+</section>
+{% endblock %}
