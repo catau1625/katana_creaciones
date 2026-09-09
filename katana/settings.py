@@ -1,15 +1,19 @@
 """
 Settings de Katana Creaciones Web
-Despliegue pensado para DigitalOcean Droplet + Ubuntu/Nginx/Gunicorn
+Compatible con Render (PostgreSQL) y desarrollo local (SQLite)
 """
 import os
+import dj_database_url
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'cambia-esta-clave-en-produccion')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost,.katanacreacionesweb.cl').split(',')
+ALLOWED_HOSTS = os.environ.get(
+    'DJANGO_ALLOWED_HOSTS',
+    '127.0.0.1,localhost,.katanacreacionesweb.cl,.onrender.com'
+).split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -52,11 +56,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'katana.wsgi.application'
 
+# Base de datos: PostgreSQL en Render (DATABASE_URL), SQLite en local
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
+        conn_max_age=600
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
