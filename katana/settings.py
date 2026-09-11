@@ -5,6 +5,9 @@ Compatible con Render (PostgreSQL) y desarrollo local (SQLite)
 import os
 import dj_database_url
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
