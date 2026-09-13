@@ -47,7 +47,8 @@ if [ -z "$DOMAIN" ]; then
     read -rp "→ Dominio (deja vacío para usar solo IP): " DOMAIN < /dev/tty
 fi
 
-SERVER_IP=$(curl -s ifconfig.me || hostname -I | awk '{print $1}')
+SERVER_IP=$(curl -4 -s --max-time 10 ifconfig.me 2>/dev/null || hostname -I | tr ' ' '\n' | grep -E '^[0-9]+\.' | head -1)
+[ -n "$SERVER_IP" ] || err "No se pudo detectar la IP pública. Define SERVER_IP manualmente."
 ALLOWED_HOSTS_VALUE="${SERVER_IP},localhost,127.0.0.1"
 SERVER_NAMES="${SERVER_IP}"
 if [ -n "$DOMAIN" ]; then
