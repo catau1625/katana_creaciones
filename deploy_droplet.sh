@@ -31,8 +31,9 @@ echo "============================================================"
 [ "$(id -u)" -eq 0 ] || err "Este script debe ejecutarse como root (sudo bash deploy_droplet.sh)"
 
 # ---------- Prompts para valores sensibles ----------
+# Leer desde /dev/tty para que funcione también con: curl ... | bash
 if [ -z "$SUPABASE_DB_PASSWORD" ]; then
-    read -rsp "→ Contraseña de la base de datos de Supabase: " SUPABASE_DB_PASSWORD
+    read -rsp "→ Contraseña de la base de datos de Supabase: " SUPABASE_DB_PASSWORD < /dev/tty
     echo
     [ -n "$SUPABASE_DB_PASSWORD" ] || err "La contraseña es obligatoria"
 fi
@@ -43,7 +44,7 @@ if [ -z "$SECRET_KEY_VALUE" ]; then
 fi
 
 if [ -z "$DOMAIN" ]; then
-    read -rp "→ Dominio (deja vacío para usar solo IP): " DOMAIN
+    read -rp "→ Dominio (deja vacío para usar solo IP): " DOMAIN < /dev/tty
 fi
 
 SERVER_IP=$(curl -s ifconfig.me || hostname -I | awk '{print $1}')
@@ -197,7 +198,7 @@ chmod -R 755 "$APP_DIR"
 # ---------- SSL opcional ----------
 if [ -n "$DOMAIN" ]; then
     echo
-    read -rp "→ ¿Configurar SSL/HTTPS ahora con Certbot? (requiere DNS apuntando) [s/N]: " DO_SSL
+    read -rp "→ ¿Configurar SSL/HTTPS ahora con Certbot? (requiere DNS apuntando) [s/N]: " DO_SSL < /dev/tty
     if [[ "$DO_SSL" =~ ^[Ss]$ ]]; then
         certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" --redirect --agree-tos -m "admin@$DOMAIN" --no-eff-email || warn "SSL falló. Puedes ejecutarlo luego: certbot --nginx -d $DOMAIN"
     fi
