@@ -2,9 +2,38 @@
 {% block title %}Panel de administración{% endblock %}
 {% block content %}
 <section class="seccion">
-    <h1>🛠️ Panel de administración</h1>
+    <div class="panel-header">
+        <h1>🛠️ Panel de <span>administración</span></h1>
+        <a class="btn-secundario" href="/admin/">⚙️ Django Admin completo</a>
+    </div>
 
-    <h2>Productos <a class="btn-chico" href="{% url 'producto_nuevo' %}">+ Nuevo</a></h2>
+    <div class="panel-grid">
+        <div class="panel-stat">
+            <div class="num">{{ productos|length }}</div>
+            <div class="lbl">Productos</div>
+        </div>
+        <div class="panel-stat">
+            <div class="num">{{ proyectos|length }}</div>
+            <div class="lbl">Proyectos</div>
+        </div>
+        <div class="panel-stat">
+            <div class="num">{{ mensajes|length }}</div>
+            <div class="lbl">Mensajes recientes</div>
+        </div>
+        <div class="panel-stat">
+            <div class="num">{{ comentarios|length }}</div>
+            <div class="lbl">Comentarios enviados</div>
+        </div>
+    </div>
+
+    <div class="panel-acciones">
+        <a class="btn-principal" href="{% url 'producto_nuevo' %}">+ Nuevo producto</a>
+        <a class="btn-principal" href="{% url 'proyecto_nuevo' %}">+ Nuevo proyecto</a>
+        <a class="btn-secundario" href="{% url 'comentario_nuevo' %}">💬 Comentario a cliente</a>
+        <a class="btn-secundario" href="{% url 'compra_nueva' %}">🛒 Asociar compra</a>
+    </div>
+
+    <h2>Productos</h2>
     <table class="tabla">
         <tr><th>Nombre</th><th>Precio</th><th>Activo</th><th></th></tr>
         {% for p in productos %}
@@ -13,10 +42,12 @@
             <td>{{ p.activo|yesno:'Sí,No' }}</td>
             <td><a class="btn-chico" href="{% url 'producto_editar' p.pk %}">Editar</a></td>
         </tr>
+        {% empty %}
+        <tr><td colspan="4">Sin productos.</td></tr>
         {% endfor %}
     </table>
 
-    <h2>Proyectos <a class="btn-chico" href="{% url 'proyecto_nuevo' %}">+ Nuevo</a></h2>
+    <h2>Proyectos</h2>
     <table class="tabla">
         <tr><th>Nombre</th><th>URL demo</th><th></th></tr>
         {% for pr in proyectos %}
@@ -24,15 +55,10 @@
             <td>{{ pr.nombre }}</td><td>{{ pr.url_demo|default:'—' }}</td>
             <td><a class="btn-chico" href="{% url 'proyecto_editar' pr.pk %}">Editar</a></td>
         </tr>
+        {% empty %}
+        <tr><td colspan="3">Sin proyectos.</td></tr>
         {% endfor %}
     </table>
-
-    <h2>Acciones rápidas</h2>
-    <p>
-        <a class="btn-secundario" href="{% url 'comentario_nuevo' %}">💬 Enviar comentario a cliente</a>
-        <a class="btn-secundario" href="{% url 'compra_nueva' %}">🛒 Asociar compra</a>
-        <a class="btn-secundario" href="/admin/">⚙️ Django Admin completo</a>
-    </p>
 
     <h2>Mensajes de contacto recientes</h2>
     <table class="tabla">
@@ -50,6 +76,8 @@
         {% for c in comentarios %}
         <tr><td>{{ c.cliente.username }}</td><td>{{ c.producto|default:'—' }}</td>
             <td>{{ c.mensaje|truncatewords:10 }}</td><td>{{ c.fecha|date:'d/m/Y' }}</td></tr>
+        {% empty %}
+        <tr><td colspan="4">Sin comentarios.</td></tr>
         {% endfor %}
     </table>
 </section>

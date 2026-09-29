@@ -5,25 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Katana Creaciones Web{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 </head>
 <body>
     <nav class="navbar">
-        <a class="logo" href="{% url 'inicio' %}">⚔️ Katana<span>Creaciones</span></a>
-        <ul class="menu">
+        <a class="logo" href="{% url 'inicio' %}">
+            <span class="logo-marca">⚔️</span>
+            Katana<span>&nbsp;Creaciones</span>
+        </a>
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button>
+        <ul class="menu" id="menuPrincipal">
             <li><a href="{% url 'inicio' %}">Inicio</a></li>
-            <li><a href="{% url 'productos' %}">Productos</a></li>
+            <li><a href="{% url 'productos' %}">Servicios</a></li>
             <li><a href="{% url 'proyectos' %}">Proyectos</a></li>
             <li><a href="{% url 'contacto' %}">Contacto</a></li>
         </ul>
         <div class="auth">
             {% if user.is_authenticated %}
-                <a class="btn-perfil" href="{% url 'perfil' %}">👤 Mi Perfil</a>
-                {% if user.is_staff %}<a class="btn-panel" href="{% url 'panel_admin' %}">Panel</a>{% endif %}
-                <a class="btn-logout" href="{% url 'logout' %}">Salir</a>
+                <a class="btn-borde" href="{% url 'perfil' %}">👤 Mi Perfil</a>
+                {% if user.is_staff %}<a class="btn-borde" href="{% url 'panel_admin' %}">Panel</a>{% endif %}
+                <a class="btn-blanco" href="{% url 'logout' %}">Salir</a>
             {% else %}
-                <a class="btn-perfil" href="{% url 'login' %}">👤 Ingresar</a>
-                <a class="btn-registro" href="{% url 'registro' %}">Registrarse</a>
+                <a class="btn-borde" href="{% url 'login' %}">Ingresar</a>
+                <a class="btn-blanco" href="{% url 'contacto' %}">Cotiza tu sitio →</a>
             {% endif %}
         </div>
     </nav>
@@ -37,7 +44,14 @@
     <main>{% block content %}{% endblock %}</main>
 
     <footer>
-        <p>© 2026 Katana Creaciones Web — contacto@katanacreacionesweb.cl</p>
+        <p>© 2026 Katana Creaciones Web — <a href="mailto:contacto@katanacreacionesweb.cl">contacto@katanacreacionesweb.cl</a></p>
+        <p style="margin-top:.4rem; font-size:.82rem;">Desarrollo web con el filo de una katana ⚔️</p>
     </footer>
+
+    <script>
+        document.getElementById('menuToggle').addEventListener('click', function () {
+            document.getElementById('menuPrincipal').classList.toggle('abierto');
+        });
+    </script>
 </body>
 </html>

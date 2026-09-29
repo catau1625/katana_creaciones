@@ -2,7 +2,8 @@
 {% block title %}Proyectos — Katana Creaciones Web{% endblock %}
 {% block content %}
 <section class="seccion">
-    <h1>Proyectos</h1>
+    <h1>Nuestros <span>Proyectos</span></h1>
+    <p class="subtitulo">Trabajo real, resultados reales.</p>
     <div class="grid-tarjetas">
         {% for pr in proyectos %}
         <div class="tarjeta">
@@ -11,6 +12,8 @@
             <p>{{ pr.descripcion|truncatewords:25 }}</p>
             <a class="btn-secundario" href="{% url 'proyecto_detalle' pr.slug %}">Ver proyecto</a>
         </div>
+        {% empty %}
+        <p class="subtitulo">Pronto mostraremos nuestros proyectos.</p>
         {% endfor %}
     </div>
 </section>

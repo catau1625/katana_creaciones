@@ -2,13 +2,41 @@
 {% block title %}Inicio — Katana Creaciones Web{% endblock %}
 {% block content %}
 <section class="hero">
-    <h1>Katana <span>Creaciones Web</span></h1>
-    <p>Desarrollo web con el filo de una katana: precisión, elegancia y potencia.</p>
-    <a class="btn-principal" href="{% url 'productos' %}">Ver servicios</a>
+    <div class="pills">
+        <span class="pill">⚡ Rápido</span>
+        <span class="pill">🎯 Preciso</span>
+        <span class="pill">📱 Responsivo</span>
+        <span class="pill">🔒 Seguro</span>
+    </div>
+    <h1>Desarrollo web con el <span>filo de una katana</span></h1>
+    <p>Precisión, elegancia y potencia. Creamos sitios y aplicaciones web que cortan la competencia y hacen crecer tu negocio.</p>
+    <div class="hero-ctas">
+        <a class="btn-principal" href="{% url 'productos' %}">Ver servicios</a>
+        <a class="btn-secundario" href="{% url 'contacto' %}">Cotiza tu proyecto →</a>
+    </div>
 </section>
 
 <section class="seccion">
-    <h2>Nuestros servicios</h2>
+    <h2>Todo lo que tu sitio necesita, <span>nada que le sobre</span></h2>
+    <p class="subtitulo">Cada proyecto se construye con un proceso claro y enfocado en resultados.</p>
+    <div class="features">
+        <div class="feature">
+            <h3>Diseño a medida</h3>
+            <p>Interfaces modernas y únicas, alineadas a la identidad de tu marca.</p>
+        </div>
+        <div class="feature">
+            <h3>Desarrollo e implementación</h3>
+            <p>Código limpio y rápido: tu sitio cargando en segundos, no en minutos.</p>
+        </div>
+        <div class="feature">
+            <h3>Publicación y mejora continua</h3>
+            <p>Despliegue, dominio, HTTPS y acompañamiento después del lanzamiento.</p>
+        </div>
+    </div>
+</section>
+
+<section class="seccion">
+    <h2>Nuestros <span>servicios</span></h2>
     <div class="grid-tarjetas">
         {% for p in productos %}
         <div class="tarjeta">
@@ -17,20 +45,31 @@
             <p class="precio">${{ p.precio }} CLP</p>
             <a class="btn-secundario" href="{% url 'producto_detalle' p.slug %}">Ver más</a>
         </div>
+        {% empty %}
+        <p class="subtitulo">Pronto publicaremos nuestros servicios.</p>
         {% endfor %}
     </div>
 </section>
 
 <section class="seccion">
-    <h2>Proyectos destacados</h2>
+    <h2>Proyectos <span>destacados</span></h2>
     <div class="grid-tarjetas">
         {% for pr in proyectos %}
         <div class="tarjeta">
+            {% if pr.imagen %}<img src="{{ pr.imagen.url }}" alt="{{ pr.nombre }}">{% endif %}
             <h3>{{ pr.nombre }}</h3>
             <p>{{ pr.descripcion|truncatewords:20 }}</p>
             <a class="btn-secundario" href="{% url 'proyecto_detalle' pr.slug %}">Explorar</a>
         </div>
+        {% empty %}
+        <p class="subtitulo">Pronto mostraremos nuestros proyectos.</p>
         {% endfor %}
     </div>
+</section>
+
+<section class="cta-final">
+    <h2>¿Listo para <span style="background:linear-gradient(120deg,#A78BFA,#8B5CF6);-webkit-background-clip:text;background-clip:text;color:transparent;">lanzar tu sitio</span>?</h2>
+    <p>Cuéntanos tu idea y te respondemos con una propuesta concreta.</p>
+    <a class="btn-principal" href="{% url 'contacto' %}">Hablemos →</a>
 </section>
 {% endblock %}

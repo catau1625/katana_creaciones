@@ -1,6 +1,10 @@
 from django.contrib import admin
 from .models import Producto, Proyecto, Compra, MensajeContacto, ComentarioAdmin
 
+admin.site.site_header = '⚔️ Katana Creaciones Web — Administración'
+admin.site.site_title = 'Katana Admin'
+admin.site.index_title = 'Gestión del sitio'
+
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):

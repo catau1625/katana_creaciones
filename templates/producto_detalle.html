@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}{{ producto.nombre }} — Katana Creaciones Web{% endblock %}
 {% block content %}
-<section class="banner" style="background: linear-gradient(135deg, #2E1A63, #B14AED);">
+<section class="banner">
     <h1>{{ producto.banner_texto|default:producto.nombre }}</h1>
 </section>
 <section class="seccion detalle">

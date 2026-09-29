@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
-{% block title %}Productos — Katana Creaciones Web{% endblock %}
+{% block title %}Servicios — Katana Creaciones Web{% endblock %}
 {% block content %}
 <section class="seccion">
-    <h1>Productos y Servicios</h1>
+    <h1>Productos y <span>Servicios</span></h1>
+    <p class="subtitulo">Soluciones web para cada etapa de tu negocio.</p>
     <div class="grid-tarjetas">
         {% for p in productos %}
         <div class="tarjeta">
@@ -13,7 +14,7 @@
             <a class="btn-secundario" href="{% url 'producto_detalle' p.slug %}">Ver detalle</a>
         </div>
         {% empty %}
-        <p>Aún no hay productos publicados.</p>
+        <p class="subtitulo">Aún no hay productos publicados.</p>
         {% endfor %}
     </div>
 </section>

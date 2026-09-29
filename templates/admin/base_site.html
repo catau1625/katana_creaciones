@@ -1,0 +1,128 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}⚔️ Katana Admin — {{ title }}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+/* Tema violeta oscuro para Django Admin — Katana Creaciones Web */
+:root {
+    --primary: #8B5CF6;
+    --secondary: #6D28D9;
+    --accent: #A78BFA;
+    --primary-fg: #FFFFFF;
+
+    --body-fg: #EDE9FE;
+    --body-bg: #0A0613;
+    --body-quiet-color: #9D94B8;
+    --body-loud-color: #EDE9FE;
+
+    --header-color: #EDE9FE;
+    --header-branding-color: #FFFFFF;
+    --header-bg: linear-gradient(135deg, #6D28D9, #4C1D95);
+    --header-link-color: #DDD0FB;
+
+    --breadcrumbs-fg: #C4B5FD;
+    --breadcrumbs-link-fg: #EDE9FE;
+    --breadcrumbs-bg: #160B2E;
+
+    --link-fg: #A78BFA;
+    --link-hover-color: #C4B5FD;
+    --link-selected-fg: #FFFFFF;
+
+    --hairline-color: rgba(167, 139, 250, .18);
+    --border-color: rgba(167, 139, 250, .22);
+
+    --error-fg: #FCA5A5;
+    --message-success-bg: rgba(52, 211, 153, .18);
+    --message-warning-bg: rgba(251, 191, 36, .18);
+    --message-error-bg: rgba(248, 113, 113, .18);
+
+    --darkened-bg: #120A22;
+    --selected-bg: rgba(139, 92, 246, .35);
+    --selected-row: rgba(139, 92, 246, .22);
+
+    --button-fg: #FFFFFF;
+    --button-bg: #8B5CF6;
+    --button-hover-bg: #7C3AED;
+    --default-button-bg: #6D28D9;
+    --default-button-hover-bg: #5B21B6;
+    --close-button-bg: #3B1A6E;
+    --close-button-hover-bg: #4C1D95;
+
+    --delete-button-bg: #B91C1C;
+    --delete-button-hover-bg: #991B1B;
+
+    --object-tools-fg: #FFFFFF;
+    --object-tools-bg: #241045;
+    --object-tools-hover-bg: #6D28D9;
+
+    --font-family-primary: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    --font-family-monospace: ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+/* Forzar modo oscuro incluso si el SO está en modo claro */
+@media (prefers-color-scheme: light) {
+    :root {
+        --body-fg: #EDE9FE;
+        --body-bg: #0A0613;
+        --darkened-bg: #120A22;
+    }
+}
+
+html, body { background: #0A0613; }
+
+#header {
+    background: linear-gradient(135deg, #6D28D9, #4C1D95);
+    color: #FFFFFF;
+}
+#branding h1 { font-weight: 800; letter-spacing: -.02em; }
+
+.module h2, .module caption, .inline-group h2 {
+    background: #241045;
+    color: #C4B5FD;
+}
+.module, .inline-group {
+    border: 1px solid rgba(167, 139, 250, .22);
+    border-radius: 10px;
+    overflow: hidden;
+}
+#changelist .results thead th { background: #1B0D38; }
+
+input, textarea, select, .form-row .vTextField {
+    background: #160B2E !important;
+    color: #EDE9FE !important;
+    border: 1px solid rgba(167, 139, 250, .3) !important;
+    border-radius: 8px;
+}
+input:focus, textarea:focus, select:focus {
+    border-color: #8B5CF6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, .25) !important;
+}
+
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+    background: #8B5CF6;
+    border-radius: 8px;
+    font-weight: 600;
+}
+.button:hover, input[type=submit]:hover, input[type=button]:hover, a.button:hover {
+    background: #7C3AED;
+}
+.button.default, input[type=submit].default, .submit-row input.default {
+    background: #6D28D9;
+    border: none;
+}
+.button.default:hover, input[type=submit].default:hover {
+    background: #5B21B6;
+}
+
+.selector select { background: #160B2E; color: #EDE9FE; }
+div.breadcrumbs { border-radius: 0; }
+.login #container { border: 1px solid rgba(167,139,250,.25); border-radius: 14px; }
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">⚔️ Katana Creaciones Web</h1>
+{% endblock %}
