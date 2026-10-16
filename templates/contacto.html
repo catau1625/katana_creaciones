@@ -1,13 +1,43 @@
 {% extends 'base.html' %}
 {% block title %}Contacto — Katana Creaciones Web{% endblock %}
 {% block content %}
-<section class="seccion formulario-seccion">
-    <h1>Contacto</h1>
-    <p>Escríbenos a <strong>contacto@katanacreacionesweb.cl</strong> o usa el formulario:</p>
-    <form method="post" enctype="multipart/form-data" class="formulario">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn-principal">Enviar mensaje</button>
-    </form>
+<section class="seccion">
+    <h1>Hablemos de tu proyecto</h1>
+    <p class="subtitulo">Cuéntanos qué necesitas y te responderemos en menos de 24 horas hábiles.</p>
+
+    <div class="contacto-grid">
+        <div class="contacto-card">
+            <h2>Envíanos un mensaje</h2>
+            <form method="post" enctype="multipart/form-data" class="formulario">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn-principal" style="width:100%;">Enviar mensaje →</button>
+                <p class="form-nota">✓ Respuesta en menos de 24h hábiles</p>
+            </form>
+        </div>
+
+        <div class="contacto-lado">
+            <div class="dato-card">
+                <span class="icono-chip violeta">📍</span>
+                <span>Santiago, Chile</span>
+            </div>
+            <div class="dato-card">
+                <span class="icono-chip verde">📱</span>
+                <span>Escríbenos por el formulario</span>
+            </div>
+            <div class="dato-card">
+                <span class="icono-chip cyan">✉️</span>
+                <span>contacto@katanacreacionesweb.cl</span>
+            </div>
+            <div class="dato-card">
+                <span class="icono-chip magenta">🕐</span>
+                <span>Lun–Vie 9:00–18:30</span>
+            </div>
+            <div class="mapa-fake">
+                <span class="pin">📍</span>
+                <small>Nuestra oficina — Santiago Centro</small>
+            </div>
+        </div>
+    </div>
 </section>
 {% endblock %}

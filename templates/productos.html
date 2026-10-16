@@ -1,20 +1,45 @@
 {% extends 'base.html' %}
-{% block title %}Servicios — Katana Creaciones Web{% endblock %}
+{% load humanize %}
+{% block title %}Catálogo — Katana Creaciones Web{% endblock %}
 {% block content %}
 <section class="seccion">
-    <h1>Productos y <span>Servicios</span></h1>
-    <p class="subtitulo">Soluciones web para cada etapa de tu negocio.</p>
+    <h1>Catálogo de servicios</h1>
+    <p class="subtitulo">Elige el servicio que tu empresa necesita. Todos incluyen acompañamiento experto.</p>
+
+    <form class="buscador" method="get" action="{% url 'productos' %}">
+        <input type="search" name="q" value="{{ q }}" placeholder="Buscar servicios...">
+        <button type="submit">Buscar</button>
+    </form>
+
+    <div class="chips">
+        <a class="chip {% if not q %}activo{% endif %}" href="{% url 'productos' %}">Todos</a>
+        <a class="chip {% if q == 'web' %}activo{% endif %}" href="?q=web">Desarrollo</a>
+        <a class="chip {% if q == 'cloud' %}activo{% endif %}" href="?q=cloud">Cloud</a>
+        <a class="chip {% if q == 'soporte' %}activo{% endif %}" href="?q=soporte">Soporte</a>
+        <a class="chip {% if q == 'seguridad' %}activo{% endif %}" href="?q=seguridad">Seguridad</a>
+        <a class="chip {% if q == 'datos' %}activo{% endif %}" href="?q=datos">Data</a>
+    </div>
+
     <div class="grid-tarjetas">
         {% for p in productos %}
-        <div class="tarjeta">
-            {% if p.imagen %}<img src="{{ p.imagen.url }}" alt="{{ p.nombre }}">{% endif %}
-            <h3>{{ p.nombre }}</h3>
-            <p>{{ p.descripcion|truncatewords:25 }}</p>
-            <p class="precio">${{ p.precio }} CLP</p>
-            <a class="btn-secundario" href="{% url 'producto_detalle' p.slug %}">Ver detalle</a>
+        <div class="tarjeta tarjeta-cat">
+            <div class="cat-visual {% cycle 'g-cyan' 'g-magenta' 'g-ambar' 'g-verde' 'g-violeta' 'g-naranja' as grad %}">
+                {% if p.imagen %}<img src="{{ p.imagen.url }}" alt="{{ p.nombre }}">{% endif %}
+                <span class="cat-etiqueta">Servicio</span>
+                <span class="cat-icono">{% cycle '💻' '🛠️' '☁️' '🔐' '📶' '📊' %}</span>
+            </div>
+            <div class="cat-cuerpo">
+                <h3>{{ p.nombre }}</h3>
+                <p>{{ p.descripcion|truncatewords:16 }}</p>
+                <div class="estrellas">★★★★★<small>4.9 (128)</small></div>
+                <div class="tarjeta-pie">
+                    <span class="precio">desde ${{ p.precio|intcomma }}</span>
+                    <a class="btn-chico" href="{% url 'producto_detalle' p.slug %}">Contratar</a>
+                </div>
+            </div>
         </div>
         {% empty %}
-        <p class="subtitulo">Aún no hay productos publicados.</p>
+        <p class="subtitulo">No encontramos servicios para tu búsqueda.</p>
         {% endfor %}
     </div>
 </section>

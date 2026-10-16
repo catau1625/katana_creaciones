@@ -20,12 +20,19 @@ def inicio(request):
 
 def productos(request):
     lista = Producto.objects.filter(activo=True)
-    return render(request, 'productos.html', {'productos': lista})
+    q = request.GET.get('q', '').strip()
+    if q:
+        lista = lista.filter(nombre__icontains=q) | lista.filter(descripcion__icontains=q)
+        lista = lista.filter(activo=True).distinct()
+    return render(request, 'productos.html', {'productos': lista, 'q': q})
 
 
 def producto_detalle(request, slug):
     producto = get_object_or_404(Producto, slug=slug, activo=True)
-    return render(request, 'producto_detalle.html', {'producto': producto})
+    relacionados = Producto.objects.filter(activo=True).exclude(pk=producto.pk)[:3]
+    return render(request, 'producto_detalle.html', {
+        'producto': producto, 'relacionados': relacionados,
+    })
 
 
 def proyectos(request):
