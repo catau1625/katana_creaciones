@@ -8,13 +8,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 </head>
 <body>
     <nav class="navbar">
         <a class="logo" href="{% url 'inicio' %}">
-            <span class="logo-marca">⚔</span>
-            Katana<span class="logo-acento">&nbsp;Creaciones</span>
+            <img class="logo-img" src="{% static 'img/logo.png' %}" alt="Katana Creaciones Web">
         </a>
         <ul class="menu">
             <li><a href="{% url 'inicio' %}" {% if request.resolver_match.url_name == 'inicio' %}class="activo"{% endif %}>Inicio</a></li>
@@ -63,8 +64,7 @@
         <div class="footer-grid">
             <div class="footer-marca">
                 <a class="logo" href="{% url 'inicio' %}">
-                    <span class="logo-marca">⚔</span>
-                    Katana<span class="logo-acento">&nbsp;Creaciones</span>
+                    <img class="logo-img logo-img-footer" src="{% static 'img/logo.png' %}" alt="Katana Creaciones Web">
                 </a>
                 <p>Soluciones web que impulsan tu negocio, con el filo de una katana.</p>
                 <div class="footer-social">
