@@ -46,6 +46,8 @@ def proyecto_detalle(request, slug):
         from django.contrib.staticfiles.finders import find
         return render(request, 'proyecto_forestia.html', {
             'proyecto': proyecto,
+            'tiene_video_crecimiento': bool(find('videos/forestia/crecimiento.mp4')),
+            'tiene_video_panel': bool(find('videos/forestia/panel.mp4')),
             'tiene_gif_crecimiento': bool(find('videos/forestia/crecimiento.gif')),
             'tiene_gif_panel': bool(find('videos/forestia/panel.gif')),
         })

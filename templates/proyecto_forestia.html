@@ -54,13 +54,27 @@
 
         <h2 class="videos-titulo">ForestIA en acción</h2>
         <div class="videos-grid">
-            {% if tiene_gif_crecimiento %}
+            {% if tiene_video_crecimiento %}
+            <div class="video-card">
+                <video controls loop muted playsinline preload="metadata"
+                       poster="{% static 'videos/forestia/crecimiento.gif' %}"
+                       src="{% static 'videos/forestia/crecimiento.mp4' %}"></video>
+                <p>Simulación del crecimiento y las capas de suelo</p>
+            </div>
+            {% elif tiene_gif_crecimiento %}
             <div class="video-card">
                 <img src="{% static 'videos/forestia/crecimiento.gif' %}" alt="Simulación de crecimiento de planta y capas de suelo" loading="lazy">
                 <p>Simulación del crecimiento y las capas de suelo (día 0 → 80)</p>
             </div>
             {% endif %}
-            {% if tiene_gif_panel %}
+            {% if tiene_video_panel %}
+            <div class="video-card">
+                <video controls loop muted playsinline preload="metadata"
+                       poster="{% static 'videos/forestia/panel.gif' %}"
+                       src="{% static 'videos/forestia/panel.mp4' %}"></video>
+                <p>Panel de monitoreo y evolución predictiva</p>
+            </div>
+            {% elif tiene_gif_panel %}
             <div class="video-card">
                 <img src="{% static 'videos/forestia/panel.gif' %}" alt="Panel de monitoreo de ForestIA" loading="lazy">
                 <p>Panel de monitoreo y evolución predictiva</p>
@@ -80,7 +94,7 @@
             </div>
             {% endif %}
         </div>
-        {% if not tiene_gif_crecimiento and not tiene_gif_panel and not proyecto.video and not proyecto.video_url %}
+        {% if not tiene_video_crecimiento and not tiene_video_panel and not tiene_gif_crecimiento and not tiene_gif_panel and not proyecto.video and not proyecto.video_url %}
         <p class="subtitulo">🚧 Pronto agregaremos videos de muestra de ForestIA.</p>
         {% endif %}
 
