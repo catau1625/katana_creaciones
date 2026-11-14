@@ -1,15 +1,15 @@
-name: Deploy to production
+name: Deploy to Droplet
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:   # permite lanzarlo a mano desde la pestaña Actions
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy vía SSH al droplet
+      - name: Desplegar vía SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.KATANA_HOST }}
@@ -17,10 +17,20 @@ jobs:
           key: ${{ secrets.KATANA_SSH_KEY }}
           script: |
             set -e
-            cd /home/katana/katana_creaciones
+            cd ~/katana_creaciones
             git fetch origin
             git reset --hard origin/main
-            ./venv/bin/pip install -r requirements.txt
-            ./venv/bin/python manage.py migrate --noinput
-            ./venv/bin/python manage.py collectstatic --noinput
-            sudo systemctl restart gunicorn
+            source venv/bin/activate
+            pip install -r requirements.txt
+            python manage.py migrate --noinput
+            python manage.py collectstatic --noinput
+            # Recargar Gunicorn sin sudo: señal HUP al proceso maestro.
+            # Reinicia los workers, que re-importan la aplicación con el código nuevo.
+            MASTER=$(pgrep -o -f "gunicorn.*katana.wsgi")
+            if [ -n "$MASTER" ]; then
+              kill -HUP "$MASTER"
+              echo "Gunicorn recargado (master PID $MASTER)"
+            else
+              echo "ADVERTENCIA: no se encontró el proceso gunicorn" >&2
+              exit 1
+            fi
