@@ -1,0 +1,26 @@
+name: Deploy to production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:   # permite lanzarlo a mano desde la pestaña Actions
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy vía SSH al droplet
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.KATANA_HOST }}
+          username: ${{ secrets.KATANA_USER }}
+          key: ${{ secrets.KATANA_SSH_KEY }}
+          script: |
+            set -e
+            cd /home/katana/katana_creaciones
+            git fetch origin
+            git reset --hard origin/main
+            ./venv/bin/pip install -r requirements.txt
+            ./venv/bin/python manage.py migrate --noinput
+            ./venv/bin/python manage.py collectstatic --noinput
+            sudo systemctl restart gunicorn
