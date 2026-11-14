@@ -91,4 +91,4 @@ Verificación: `curl -s -o /dev/null -w "%{http_code}\n" https://katanacreacione
 - [x] Activar auto-deploy → GitHub Actions + SSH (workflow `deploy.yml`)
 - [x] Probar con un push vacío → run verde en 18 s (2026-11-14)
 - [ ] (Opcional) Crear superusuario de ForestIA en su droplet: `ssh root@159.89.138.58 'cd /opt/forestia && docker compose exec -T web python manage.py createsuperuser'`
-- [ ] (Opcional) Desactivar los 6 servicios de ejemplo del seed (`0002_seed_catalogo`) desde `/panel/` para que el catálogo muestre solo los servicios reales
+- [x] Desactivar los 6 servicios de ejemplo del seed (`0002_seed_catalogo`, quedaron `activo=False`) y eliminar los 3 proyectos de ejemplo → hecho el 2026-11-14 vía `manage.py shell`
