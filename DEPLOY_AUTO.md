@@ -1,94 +1,176 @@
-# Guía: despliegue de Katana Creaciones Web
+# Guía de despliegue — katanacreacionesweb.cl (Droplet DigitalOcean)
 
-> Actualizado: 2026-11-14 · Repositorio: `catau1625/katana_creaciones` · Sitio: https://katanacreacionesweb.cl
+> **Escenario confirmado (2026-11-14):** el sitio Katana vive en un **Droplet** (no App Platform).
+> Repo: https://github.com/catau1625/katana_creaciones · Branch: `main`
+> Pendiente: publicar los commits `1c2937f` (videos HD) y `3cc3f12` (demo rediseñado dark).
 
 ---
 
-## 0. Estado actual: ✅ AUTO-DEPLOY ACTIVO
+## PARTE 1 — Deploy manual AHORA (salir del paso, ~10 min)
 
-- **Cada `git push` a `main` despliega automáticamente** vía GitHub Actions (~20-30 s). Ver pestaña **Actions** del repo.
-- Workflow: `.github/workflows/deploy.yml` (SSH al droplet → `git reset --hard origin/main` → `pip install` → `migrate` → `collectstatic` → restart gunicorn).
-- Probado el 2026-11-14 con el commit `30e7053` (run en verde, 18 s).
-- Verificación rápida de que el sitio responde:
+### 1.1 Datos que necesitas reunir
+
+| Dato | Dónde conseguirlo |
+|---|---|
+| **IP del Droplet** | DigitalOcean → Droplets → el droplet de Katana |
+| **Usuario SSH** | El que usaste al instalar (`katana`, `root` u otro — según `DO_DEPLOY.md` es `katana`) |
+| **Cómo te autenticas** | ¿Password o llave SSH? Si es password, te lo pedirá al conectar |
+
+### 1.2 Ejecutar el deploy
 
 ```bash
-curl -s -o /dev/null -w "%{http_code}\n" https://katanacreacionesweb.cl/   # esperado: 200
+ssh <USUARIO>@<IP_DEL_DROPLET>
+
+# Dentro del droplet:
+cd ~/katana_creaciones          # ajusta si la ruta es otra (p. ej. /opt/katana_creaciones)
+git pull origin main            # trae 1c2937f + 3cc3f12
+source venv/bin/activate        # o: source venv/bin/activate.fish según tu shell
+pip install -r requirements.txt
+python manage.py migrate --noinput
+python manage.py collectstatic --noinput
 ```
 
-> ⚠️ Nota sobre verificaciones por contenido: Whitenoise hashea los nombres de archivos estáticos (ej. `crecimiento.57934cdac0a9.mp4`), así que para buscar un archivo en el HTML hay que grepear el nombre **sin** la extensión: `grep -c "crecimiento"` en vez de `grep -c "crecimiento.mp4"`.
+### 1.3 Reiniciar la aplicación
+
+Depende de cómo corre Gunicorn en ese droplet. Probar en orden:
+
+```bash
+# Opción A: servicio systemd
+sudo systemctl restart gunicorn
+
+# Opción B: si el servicio tiene otro nombre, listar:
+systemctl list-units --type=service | grep -iE "gunicorn|katana|uwsgi"
+
+# Opción C: si corre con tmux/nohup a mano (ver procesos):
+ps aux | grep -i gunicorn
+# → matar y relanzar según el comando que se vea en el proceso
+```
+
+### 1.4 Verificar que quedó publicado
+
+```bash
+curl -s https://katanacreacionesweb.cl/proyectos/forestia/ | grep -c "crecimiento.mp4"
+# 1 = deploy OK con videos HD
+
+curl -s https://katanacreacionesweb.cl/static/forestia/demo.html | grep -c "kimi-icon"
+# 0 = demo rediseñado activo (ya no depende del runtime de widgets)
+```
+
+> ⚠️ **Si el `collectstatic` usa manifiesto** (whitenoise `CompressedManifestStaticFilesStorage` cuando `DEBUG=False`): debe correrse en cada deploy, tal como arriba. Sin eso, los CSS/JS nuevos no se servirán.
 
 ---
 
-## 1. Arquitectura
+## PARTE 2 — Auto-deploy con GitHub Actions (para no volver a hacer lo anterior a mano)
 
-| Pieza | Dónde está | Deploy |
-|---|---|---|
-| Sitio Katana (Django 4.2, app `core`) | **Droplet DigitalOcean `143.198.173.51`** (`/home/katana/katana_creaciones`, nginx → gunicorn → Django) | ✅ **Auto (GitHub Actions + SSH)** |
-| Base de datos de Katana | **Supabase** (PostgreSQL, ver `DATABASE_URL` en `/home/katana/katana_creaciones/.env` del droplet — NO está en git) | No aplica |
-| ForestIA (proyecto) | Droplet propio `159.89.138.58` (`/opt/forestia`) | ✅ Auto (GitHub Actions propio) |
-| Página ForestIA dentro de Katana | Este repo (`/proyectos/forestia/`) | Auto (vía deploy de Katana) |
+Una vez hecho el manual y verificado, automatizar. Es el mismo mecanismo que ya funciona en el repo ForestIA (deploy en ~58 s por push).
 
-Reglas de oro:
-- **Nunca** tocar producción con la `db.sqlite3` local: la BD real es Supabase.
-- Cada deploy corre `collectstatic` (el sitio usa `CompressedManifestStaticFilesStorage` de whitenoise → URLs estáticos con hash).
-- Dominio detrás de **Cloudflare** (proxy naranja): los cambios DNS no exponen la IP del servidor.
-- El `.env` de producción vive solo en el droplet; no subirlo a git.
+### 2.1 Preparar acceso SSH dedicado al droplet
 
----
+En tu Mac:
 
-## 2. Configuración del auto-deploy (ya realizada el 2026-11-14)
+```bash
+# Si no existe ya una clave para este droplet:
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_katana -N "" -C "katana-deploy"
+cat ~/.ssh/id_ed25519_katana.pub
+```
 
-Referencia por si hay que recrearla o rotar claves:
+Copiar la salida y agregarla en el droplet:
 
-### Secretos del repo (GitHub → Settings → Secrets and variables → Actions)
+```bash
+ssh <USUARIO>@<IP_DEL_DROPLET>
+mkdir -p ~/.ssh && chmod 700 ~/.ssh
+echo "PEGA_AQUI_LA_CLAVE_PUBLICA" >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+```
+
+Probar desde el Mac (sin password):
+
+```bash
+ssh -i ~/.ssh/id_ed25519_katana <USUARIO>@<IP_DEL_DROPLET> "echo OK"
+```
+
+### 2.2 Crear los secretos en GitHub
+
+En https://github.com/catau1625/katana_creaciones → **Settings → Secrets and variables → Actions → New repository secret**:
 
 | Secreto | Valor |
 |---|---|
-| `KATANA_HOST` | `143.198.173.51` |
-| `KATANA_USER` | `katana` |
-| `KATANA_SSH_KEY` | Clave privada ed25519 (pareja de `~/.ssh/katana_deploy.pub` en el Mac del dueño) |
-
-### En el droplet (ya aplicado)
-
-- Clave pública en `/home/katana/.ssh/authorized_keys` (permisos 700/600, dueño `katana`).
-- `sudo` sin contraseña para reiniciar el servicio: `/etc/sudoers.d/katana-gunicorn` con `katana ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart gunicorn`.
-
-### Acceso del dueño al droplet
-
-- **Consola web de DigitalOcean** (como root). El acceso SSH directo como root está deshabilitado (`Permission denied (publickey)`); los comandos de emergencia se corren directo en la consola web, sin prefijo `ssh`.
-
----
-
-## 3. Deploy MANUAL (fallback, solo si el pipeline falla)
-
-En la consola web del droplet (como root):
+| `KATANA_HOST` | IP del droplet |
+| `KATANA_USER` | usuario SSH |
+| `KATANA_SSH_KEY` | contenido completo de `~/.ssh/id_ed25519_katana` (la **privada**) |
 
 ```bash
-su - katana -c "cd /home/katana/katana_creaciones && git fetch origin && git reset --hard origin/main && ./venv/bin/pip install -r requirements.txt && ./venv/bin/python manage.py migrate --noinput && ./venv/bin/python manage.py collectstatic --noinput"
-systemctl restart gunicorn
+# Para copiar la privada completa al portapapeles (Mac):
+cat ~/.ssh/id_ed25519_katana | pbcopy
 ```
 
-Verificación: `curl -s -o /dev/null -w "%{http_code}\n" https://katanacreacionesweb.cl/` → `200`.
+### 2.3 Crear el workflow
+
+Archivo nuevo `.github/workflows/deploy.yml` en el repo:
+
+```yaml
+name: Deploy to Droplet
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Desplegar vía SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.KATANA_HOST }}
+          username: ${{ secrets.KATANA_USER }}
+          key: ${{ secrets.KATANA_SSH_KEY }}
+          script: |
+            set -e
+            cd ~/katana_creaciones
+            git fetch origin
+            git reset --hard origin/main
+            source venv/bin/activate
+            pip install -r requirements.txt
+            python manage.py migrate --noinput
+            python manage.py collectstatic --noinput
+            sudo systemctl restart gunicorn
+```
+
+> **Ajustes posibles según el servidor** (verificarlos en el deploy manual de la Parte 1):
+> - Ruta del repo (`cd ~/katana_creaciones`)
+> - Nombre del servicio (`gunicorn` — anotar el real de la Opción 1.3-B)
+> - Si el usuario no tiene sudo sin password: agregarlo a sudoers con `NOPASSWD` solo para systemctl, o ejecutar el reinicio con otro mecanismo.
+
+### 2.4 Probar el pipeline
+
+```bash
+git commit --allow-empty -m "probar auto-deploy"
+git push
+```
+
+Luego: GitHub → repo → pestaña **Actions** → debe salir un run verde → verificar con el `curl` del paso 1.4.
+
+A partir de ahí: **cada push a `main` se publica solo.**
 
 ---
 
-## 4. Resumen de URLs y referencias
+## PARTE 3 — Referencia rápida de mantenimiento
 
-| Qué | URL / dato |
+| Tarea | Comando / lugar |
 |---|---|
-| Repo Katana | https://github.com/catau1625/katana_creaciones |
-| Sitio | https://katanacreacionesweb.cl |
-| Página del proyecto | https://katanacreacionesweb.cl/proyectos/forestia/ |
-| Plataforma ForestIA | https://forestia.katanacreacionesweb.cl (Droplet `159.89.138.58`, auto-deploy propio) |
-| Admin Katana | https://katanacreacionesweb.cl/admin/ |
-| Panel interno Katana | https://katanacreacionesweb.cl/panel/ |
-| Workflow de referencia (ForestIA) | https://github.com/catau1625/ForestIA/blob/main/.github/workflows/deploy.yml |
+| Ver si hay commits sin publicar | `git log origin/main..HEAD` (local) o comparar en GitHub |
+| Forzar deploy manual | GitHub → Actions → "Deploy to Droplet" → **Run workflow** |
+| Ver logs del servidor | `ssh <USUARIO>@<IP> 'sudo journalctl -u gunicorn -n 100'` |
+| Ver logs de Nginx | `ssh <USUARIO>@<IP> 'sudo tail -50 /var/log/nginx/error.log'` |
+| La BD de producción es **Supabase** | Nunca usar `db.sqlite3` local; las migraciones corren contra Supabase vía `DATABASE_URL` del `.env` del droplet |
 
-## 5. Checklist de mantenimiento
+## Checklist
 
-- [x] Identificar hosting → **Droplet `143.198.173.51`** (no App Platform)
-- [x] Deploy del commit `1c2937f` (videos HD ForestIA) → en producción
-- [x] Activar auto-deploy → GitHub Actions + SSH (workflow `deploy.yml`)
-- [x] Probar con un push vacío → run verde en 18 s (2026-11-14)
-- [ ] (Opcional) Crear superusuario de ForestIA en su droplet: `ssh root@159.89.138.58 'cd /opt/forestia && docker compose exec -T web python manage.py createsuperuser'`
-- [x] Desactivar los 6 servicios de ejemplo del seed (`0002_seed_catalogo`, quedaron `activo=False`) y eliminar los 3 proyectos de ejemplo → hecho el 2026-11-14 vía `manage.py shell`
+- [ ] 1.2 Deploy manual ejecutado (commits 1c2937f y 3cc3f12)
+- [ ] 1.4 Verificación `crecimiento.mp4` = 1 y `kimi-icon` = 0
+- [ ] 2.1 Clave SSH dedicada probada (`echo OK` sin password)
+- [ ] 2.2 Secretos `KATANA_HOST` / `KATANA_USER` / `KATANA_SSH_KEY` creados
+- [ ] 2.3 Workflow `.github/workflows/deploy.yml` commiteado y pusheado
+- [ ] 2.4 Run de prueba verde + verificación pública
