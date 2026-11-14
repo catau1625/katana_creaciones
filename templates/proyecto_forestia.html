@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}ForestIA — Katana Creaciones Web{% endblock %}
+{% block content %}
+<section class="banner banner-proyecto">
+    <a class="btn-volver" href="{% url 'inicio' %}">← Volver a katanacreacionesweb.cl</a>
+    <h1>🌱 ForestIA</h1>
+    <p class="banner-tagline">Simulación agrícola predictiva: del dato de suelo a la cosecha.</p>
+</section>
+
+<section class="seccion">
+    <div class="tabs" role="tablist">
+        <button class="tab-btn activo" id="tab-inicio" role="tab" aria-selected="true"
+                onclick="mostrarTab('inicio')">Inicio</button>
+        <button class="tab-btn" id="tab-prototipo" role="tab" aria-selected="false"
+                onclick="mostrarTab('prototipo')">Prototipo</button>
+    </div>
+
+    <!-- ============ PESTAÑA INICIO ============ -->
+    <div id="panel-inicio" class="tab-panel">
+        <div class="forestia-intro">
+            <h2>¿Qué es ForestIA?</h2>
+            <p class="subtitulo">
+                ForestIA es una plataforma de simulaciones agrícolas pensada para usar sin capacitación
+                técnica. Se cargan los datos del terreno —sustrato, humedad, capa hídrica, clima y tipo
+                de planta— y la plataforma genera una <strong>evolución predictiva</strong> de las plantas
+                y de las capas de suelo que las contienen, considerando el consumo de nutrientes propio
+                de cada especie, ya sean árboles frutales u hortalizas.
+            </p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🌿</span>
+                <h3>Carga simple de cultivos</h3>
+                <p>Menú intuitivo para registrar plantas: árboles frutales u hortalizas, sin tecnicismos.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🧪</span>
+                <h3>Datos de suelo y clima</h3>
+                <p>Integración con plataformas climáticas y sensores de suelo (incluido monitoreo con drones).</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">📈</span>
+                <h3>Evolución predictiva</h3>
+                <p>Simulación estadística del crecimiento y del consumo de nutrientes por especie, día a día.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🎯</span>
+                <h3>Interfaz sin capacitación</h3>
+                <p>Pensada para productores: visual, animada y directa, sin manuales ni cursos.</p>
+            </div>
+        </div>
+
+        <h2 class="videos-titulo">ForestIA en acción</h2>
+        <div class="videos-grid">
+            {% if tiene_gif_crecimiento %}
+            <div class="video-card">
+                <img src="{% static 'videos/forestia/crecimiento.gif' %}" alt="Simulación de crecimiento de planta y capas de suelo" loading="lazy">
+                <p>Simulación del crecimiento y las capas de suelo (día 0 → 80)</p>
+            </div>
+            {% endif %}
+            {% if tiene_gif_panel %}
+            <div class="video-card">
+                <img src="{% static 'videos/forestia/panel.gif' %}" alt="Panel de monitoreo de ForestIA" loading="lazy">
+                <p>Panel de monitoreo y evolución predictiva</p>
+            </div>
+            {% endif %}
+            {% if proyecto.video %}
+            <div class="video-card">
+                <video controls loop muted playsinline preload="metadata"
+                       src="{{ proyecto.video.url }}"></video>
+                <p>Video del proyecto</p>
+            </div>
+            {% elif proyecto.video_url %}
+            <div class="video-card video-embed">
+                <iframe src="{{ proyecto.video_url }}" title="Video ForestIA"
+                        loading="lazy" allowfullscreen></iframe>
+                <p>Video del proyecto</p>
+            </div>
+            {% endif %}
+        </div>
+        {% if not tiene_gif_crecimiento and not tiene_gif_panel and not proyecto.video and not proyecto.video_url %}
+        <p class="subtitulo">🚧 Pronto agregaremos videos de muestra de ForestIA.</p>
+        {% endif %}
+
+        <h2 class="videos-titulo">Pruébalo tú mismo</h2>
+        <p class="subtitulo" style="text-align:center;">Demo interactivo: elige planta y suelo, y observa cómo evoluciona la simulación.</p>
+        <div class="cuadro-demo cuadro-demo-alto">
+            <iframe src="{% static 'forestia/demo.html' %}" title="Demo interactivo ForestIA" loading="lazy"></iframe>
+        </div>
+    </div>
+
+    <!-- ============ PESTAÑA PROTOTIPO ============ -->
+    <div id="panel-prototipo" class="tab-panel oculto">
+        {% if proyecto.url_demo %}
+        <p class="subtitulo">Esta es la interfaz de la aplicación. Explórala directamente aquí:</p>
+        <div class="cuadro-demo cuadro-demo-alto">
+            <iframe src="{{ proyecto.url_demo }}" title="Prototipo ForestIA"
+                    loading="lazy" allowfullscreen></iframe>
+        </div>
+        <p><a class="btn-secundario" href="{{ proyecto.url_demo }}" target="_blank" rel="noopener">Abrir en pestaña nueva ↗</a></p>
+        {% else %}
+        <div class="cuadro-demo placeholder">
+            <p>🚧 El demo interactivo se habilitará cuando se configure la URL de la plataforma.</p>
+            <p class="placeholder-hint">(Se define en el Panel de administración → Proyectos → ForestIA → «Link al sitio»)</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+function mostrarTab(nombre) {
+    var esInicio = nombre === 'inicio';
+    document.getElementById('panel-inicio').classList.toggle('oculto', !esInicio);
+    document.getElementById('panel-prototipo').classList.toggle('oculto', esInicio);
+    document.getElementById('tab-inicio').classList.toggle('activo', esInicio);
+    document.getElementById('tab-prototipo').classList.toggle('activo', !esInicio);
+    document.getElementById('tab-inicio').setAttribute('aria-selected', esInicio);
+    document.getElementById('tab-prototipo').setAttribute('aria-selected', !esInicio);
+}
+</script>
+{% endblock %}

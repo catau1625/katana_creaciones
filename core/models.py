@@ -27,6 +27,10 @@ class Proyecto(models.Model):
     url_demo = models.URLField(blank=True, help_text='Link al sitio para mostrarlo en el cuadro interactivo')
     imagen = models.ImageField(upload_to='proyectos/', blank=True, null=True)
     destacado = models.BooleanField(default=False)
+    video = models.FileField(upload_to='proyectos/videos/', blank=True,
+                             help_text='Video de muestra (mp4) alojado en el sitio')
+    video_url = models.URLField(blank=True,
+                                help_text='Video externo (YouTube/Vimeo); se usa si no hay archivo subido')
 
     class Meta:
         verbose_name_plural = 'Proyectos'

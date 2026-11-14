@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ForestIA · Panel</title>
+<style>
+.wrap{font-family:var(--kimi-font-sans);padding-block-start:var(--kimi-space-4);padding-inline:var(--kimi-space-4)}
+button,input,select,textarea{font:inherit}
+svg text{font-family:var(--kimi-font-sans)}
+.head{display:flex;align-items:center;gap:var(--kimi-space-3);margin-block-end:var(--kimi-space-2)}
+.brand{display:flex;align-items:center;gap:var(--kimi-space-2)}
+.brand .mk{width:28px;height:28px;border-radius:var(--kimi-radius-button);display:grid;place-items:center;background:var(--kimi-color-surface-muted);color:var(--kimi-color-text-primary)}
+.head .grow{flex:1}
+.loc{display:flex;align-items:center;gap:var(--kimi-space-1);color:var(--kimi-color-text-tertiary);font-size:12px}
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--kimi-space-4)}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.card{border:1px solid var(--kimi-color-border);border-radius:var(--kimi-radius-panel);padding:var(--kimi-space-4)}
+.card h3{margin:0 0 var(--kimi-space-3);font-size:14px;font-weight:500;color:var(--kimi-color-text-secondary)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:var(--kimi-space-3)}
+.fields .full{grid-column:1/-1}
+.slider-row{display:flex;align-items:center;gap:var(--kimi-space-3)}
+.slider-row input{flex:1}
+.slider-row .val{min-width:52px;text-align:end;font-size:14px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--kimi-space-3);margin-block:var(--kimi-space-4)}
+.kpi{border:1px solid var(--kimi-color-border);border-radius:var(--kimi-radius-panel);padding:var(--kimi-space-3)}
+.kpi .v{font-size:22px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.15}
+.kpi .l{font-size:12px;color:var(--kimi-color-text-tertiary)}
+.legend{display:flex;flex-wrap:wrap;gap:var(--kimi-space-2);margin-block-start:var(--kimi-space-2)}
+.lg{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--kimi-color-text-secondary)}
+.lg i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.clima{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--kimi-space-2)}
+@media(max-width:640px){.clima{grid-template-columns:repeat(3,1fr)}}
+.cl{border:1px solid var(--kimi-color-border);border-radius:var(--kimi-radius-panel);padding:var(--kimi-space-2) var(--kimi-space-3)}
+.cl .v{font-size:15px;font-weight:500;font-variant-numeric:tabular-nums}
+.cl .l{font-size:11px;color:var(--kimi-color-text-tertiary)}
+.alerts{display:flex;flex-direction:column;gap:var(--kimi-space-2);margin-block-start:var(--kimi-space-3)}
+.al{display:flex;align-items:center;gap:var(--kimi-space-2);font-size:13px;color:var(--kimi-color-text-secondary)}
+.al .dot{width:8px;height:8px;border-radius:var(--kimi-radius-full);flex:none}
+.chart-box{border:1px solid var(--kimi-color-border);border-radius:var(--kimi-radius-panel);padding:var(--kimi-space-3)}
+.hbar{display:flex;align-items:center;justify-content:space-between;gap:var(--kimi-space-3);margin-block-end:var(--kimi-space-2)}
+.sonar{display:flex;gap:var(--kimi-space-2);margin-block-start:var(--kimi-space-3);flex-wrap:wrap}
+.son{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--kimi-color-text-secondary);border:1px solid var(--kimi-color-border);border-radius:var(--kimi-radius-chip);padding:2px 8px}
+.son i{width:7px;height:7px;border-radius:var(--kimi-radius-full);background:var(--kimi-color-positive)}
+.foot{margin-block-start:var(--kimi-space-4);font-size:12px;color:var(--kimi-color-text-quaternary)}
+.sec{margin-block-start:var(--kimi-space-4)}
+.sec-title{font-size:14px;font-weight:500;color:var(--kimi-color-text-secondary);margin-block-end:var(--kimi-space-2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div class="brand">
+      <span class="mk"><kimi-icon name="LinechartIcon"></kimi-icon></span>
+      <span class="kimi-page-title">ForestIA</span>
+    </div>
+    <span class="kimi-status kimi-status--positive">sondas online</span>
+    <span class="grow"></span>
+    <span class="loc"><kimi-icon name="LocateIcon"></kimi-icon> Parcela 4 · Lote norte</span>
+    <button class="kimi-icon-button" id="refresh" aria-label="Refrescar"><kimi-icon name="RefreshIcon"></kimi-icon></button>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h3>Configuración del cultivo</h3>
+        <div class="fields">
+          <label class="kimi-field">
+            <span class="kimi-label">Planta</span>
+            <select class="kimi-select" id="plant">
+              <option value="tomate">Tomate</option>
+              <option value="citrico">Naranjo</option>
+              <option value="lechuga">Lechuga</option>
+              <option value="maiz">Maíz</option>
+              <option value="olivo">Olivo</option>
+            </select>
+          </label>
+          <label class="kimi-field">
+            <span class="kimi-label">Suelo / sustrato</span>
+            <select class="kimi-select" id="soil">
+              <option value="franco">Franco</option>
+              <option value="arenoso">Arenoso</option>
+              <option value="arcilloso">Arcilloso</option>
+              <option value="coco">Fibra de coco</option>
+            </select>
+          </label>
+          <label class="kimi-field full">
+            <span class="kimi-label">Humedad inicial del suelo</span>
+            <div class="slider-row">
+              <input type="range" class="kimi-range" id="hum" min="15" max="55" value="35">
+              <span class="val kimi-number" id="humV">35&nbsp;%</span>
+            </div>
+          </label>
+          <label class="kimi-field full">
+            <span class="kimi-label">Fertilidad inicial (N)</span>
+            <div class="slider-row">
+              <input type="range" class="kimi-range" id="nit" min="20" max="100" value="70">
+              <span class="val kimi-number" id="nitV">70&nbsp;ppm</span>
+            </div>
+          </label>
+        </div>
+        <div style="margin-block-start:var(--kimi-space-3)" class="kimi-row">
+          <span class="kimi-meta" id="plantInfo"></span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-block-start:var(--kimi-space-3)">
+        <h3>Perfil de capas</h3>
+        <svg id="soilSvg" viewBox="0 0 300 210" width="100%" role="img" aria-label="Perfil de suelo"></svg>
+        <div class="sonar" id="sonar"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="hbar">
+          <h3 style="margin:0">Evolución predictiva</h3>
+          <div class="kimi-segmented" id="horizon" aria-label="Horizonte">
+            <button class="kimi-chip" data-m="3" aria-pressed="false">3 m</button>
+            <button class="kimi-chip" data-m="6" aria-pressed="true">6 m</button>
+            <button class="kimi-chip" data-m="12" aria-pressed="false">12 m</button>
+          </div>
+        </div>
+        <div class="chart-box">
+          <svg id="chart" viewBox="0 0 560 240" width="100%" role="img" aria-label="Simulación"></svg>
+          <div class="legend">
+            <span class="lg"><i style="background:var(--kimi-chart-1)"></i>Biomasa</span>
+            <span class="lg"><i style="background:var(--kimi-chart-3)"></i>Humedad</span>
+            <span class="lg"><i style="background:var(--kimi-chart-4)"></i>Nitrógeno</span>
+          </div>
+        </div>
+        <div style="margin-block-start:var(--kimi-space-3)">
+          <button class="kimi-button kimi-button--primary" id="run"><kimi-icon name="PlayIcon"></kimi-icon>&nbsp;Simular</button>
+        </div>
+      </div>
+
+      <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
+        <div class="kpi"><div class="v kimi-number" id="kBiom">–</div><div class="l">Biomasa final (rel.)</div></div>
+        <div class="kpi"><div class="v kimi-number" id="kHum">–</div><div class="l">Humedad final</div></div>
+        <div class="kpi"><div class="v kimi-number" id="kN">–</div><div class="l">N final</div></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Clima en vivo · OpenWeather</div>
+        <div class="clima">
+          <div class="cl"><div class="v kimi-number">24,6 °C</div><div class="l">Temperatura</div></div>
+          <div class="cl"><div class="v kimi-number">58 %</div><div class="l">Humedad amb.</div></div>
+          <div class="cl"><div class="v kimi-number">0 mm</div><div class="l">Lluvia 24 h</div></div>
+          <div class="cl"><div class="v kimi-number">5,2</div><div class="l">Viento m/s</div></div>
+          <div class="cl"><div class="v kimi-number">4,8</div><div class="l">ET0 mm/día</div></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Alertas del modelo</div>
+        <div class="alerts" id="alerts"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">Fuentes: sondas capacitivas LoRa (humedad · EC · temperatura) · drone multiespectral NDVI/NDRE · estación meteorológica · base de datos agronómicas (FAO, USDA). Prototipo conceptual.</div>
+</div>
+
+<script>
+const plants = {
+  tomate:{label:"Tomate",ciclo:120,r:0.045,nDem:0.9,tmid:60,text:"Hortaliza · ciclo 120 días · alta demanda de N y K"},
+  lechuga:{label:"Lechuga",ciclo:60,r:0.08,nDem:0.7,tmid:32,text:"Hortaliza · ciclo 60 días · demanda media de N"},
+  citrico:{label:"Naranjo",ciclo:365,r:0.012,nDem:0.5,tmid:210,text:"Frutal perenne · ciclo 365 días · demanda moderada"},
+  maiz:{label:"Maíz",ciclo:150,r:0.04,nDem:0.8,tmid:85,text:"Cereal · ciclo 150 días · alta demanda de N"},
+  olivo:{label:"Olivo",ciclo:365,r:0.008,nDem:0.35,tmid:240,text:"Frutal perenne · ciclo 365 días · baja demanda"}
+};
+const soils = {
+  franco:{label:"Franco",ret:0.85,lay:["Horizonte A · franco","Horizonte B · franco limoso","Horizonte C · material parental"]},
+  arenoso:{label:"Arenoso",ret:0.45,lay:["Capa 0–20 cm · arena","Capa 20–50 cm · arena limosa","Subyacente · grava"]},
+  arcilloso:{label:"Arcilloso",ret:0.7,lay:["Capa 0–20 cm · franco arcilloso","Capa 20–50 cm · arcilla","Subyacente · franco"]},
+  coco:{label:"Fibra de coco",ret:0.75,lay:["Sustrato · fibra de coco","Sustrato · coco + perlita","Drenaje · grava"]}
+};
+let months = 6;
+const el = id => document.getElementById(id);
+function series(){
+  const p = plants[el("plant").value], s = soils[el("soil").value];
+  const H0 = +el("hum").value, N0 = +el("nit").value, T = months*30;
+  const t=[],b=[],h=[],n=[];
+  for(let d=0; d<=T; d+=Math.max(3,Math.round(T/80))){
+    t.push(d);
+    b.push(Math.min(1, 1/(1+Math.exp(-p.r*(d-p.tmid)))));
+    let hv = H0 - (d%12)*(p.nDem*(1-s.ret)+0.35)*s.ret;
+    if(hv < 12) hv = H0 - 2;
+    h.push(Math.max(5,Math.min(60,hv)));
+    n.push(Math.max(0, N0*(1 - p.nDem*Math.min(1,d/p.ciclo)) + 4*Math.sin(d/40)));
+  }
+  return {t,b,h,n};
+}
+function drawChart(){
+  const {t,b,h,n} = series();
+  const W=560,H=240,P=34,y0=H-26,y1=12,x0=P,x1=W-10;
+  const xmax=t[t.length-1], x=d=>x0+(x1-x0)*d/xmax, y=v=>y0-(y0-y1)*v/100;
+  let g="";
+  [0,25,50,75,100].forEach(v=>{g+=`<line x1="${x0}" y1="${y(v)}" x2="${x1}" y2="${y(v)}" stroke="var(--kimi-color-border)" stroke-width="0.5"/><text x="${x0-6}" y="${y(v)+3}" text-anchor="end" font-size="9" fill="var(--kimi-color-text-quaternary)">${v}</text>`});
+  for(let m=0;m<=months;m++){const d=m*30;g+=`<text x="${x(d)}" y="${H-8}" text-anchor="middle" font-size="9" fill="var(--kimi-color-text-quaternary)">${m} m</text>`}
+  const path=(arr,attr)=>`<polyline fill="none" stroke="${attr}" stroke-width="2" stroke-linejoin="round" points="${arr.map((v,i)=>x(t[i]).toFixed(1)+","+y(v).toFixed(1)).join(" ")}"/>`;
+  g+=path(b,"var(--kimi-chart-1)")+path(h,"var(--kimi-chart-3)")+path(n,"var(--kimi-chart-4)");
+  el("chart").innerHTML=g;
+  const lb=b[b.length-1]*100, lh=h[h.length-1], ln=n[n.length-1];
+  el("kBiom").textContent=lb.toFixed(0)+" %"; el("kHum").textContent=lh.toFixed(0)+" %"; el("kN").textContent=ln.toFixed(0)+" ppm";
+  const al=[];
+  al.push(lh<18?["--kimi-color-warning","Riego recomendado en menos de 48 h (humedad al "+lh.toFixed(0)+" %)"]:["--kimi-color-positive","Agua dentro del rango óptimo para "+plants[el("plant").value].label.toLowerCase()]);
+  al.push(ln<28?["--kimi-color-danger","Planificar fertirrigación: N bajo umbral ("+ln.toFixed(0)+" ppm) en las próximas 2 semanas"]:["--kimi-color-positive","Nitrógeno suficiente para la etapa de crecimiento activo"]);
+  al.push(["--kimi-color-positive","Índice NDVI del vuelo del drone: 0,78 · sin estrés hídrico detectado"]);
+  el("alerts").innerHTML=al.map(a=>`<div class="al"><span class="dot" style="background:var(${a[0]})"></span>${a[1]}</div>`).join("");
+}
+function drawSoil(){
+  const s = soils[el("soil").value], H0=+el("hum").value;
+  const bh=[40,70,50,40]; let y=8, g="";
+  s.lay.forEach((L,i)=>{
+    g+=`<rect x="10" y="${y}" width="220" height="${bh[i]}" rx="4" fill="var(--kimi-color-surface-muted)" stroke="var(--kimi-color-border)" stroke-width="0.5"/>
+        <text x="18" y="${y+16}" font-size="10" fill="var(--kimi-color-text-secondary)">${L}</text>`;
+    y+=bh[i]+4;
+  });
+  const wh=(H0/60)*132;
+  g+=`<rect x="10" y="${172-wh}" width="220" height="${wh}" rx="4" fill="color-mix(in srgb, var(--kimi-chart-1) 18%, transparent)"/>
+      <line x1="10" y1="${172-wh}" x2="230" y2="${172-wh}" stroke="var(--kimi-chart-1)" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <text x="234" y="${176-wh}" font-size="9" fill="var(--kimi-chart-1)">nivel hídrico ${H0} %</text>`;
+  const depths=[{d:"15 cm",p:30},{d:"30 cm",p:75},{d:"45 cm",p:118}];
+  depths.forEach((o,i)=>{
+    g+=`<line x1="230" y1="${o.p+8}" x2="252" y2="${o.p+8}" stroke="var(--kimi-color-border)" stroke-width="0.8"/>
+        <circle cx="230" cy="${o.p+8}" r="3.5" fill="var(--kimi-color-text-primary)"/>
+        <text x="256" y="${o.p+11}" font-size="9" fill="var(--kimi-color-text-tertiary)">S${i+1} · ${o.d}</text>`;
+  });
+  el("soilSvg").innerHTML=g;
+  el("sonar").innerHTML=depths.map((o,i)=>`<span class="son"><i></i>Sonda S${i+1} · ${o.d} · en línea</span>`).join("");
+}
+function info(){el("plantInfo").textContent=plants[el("plant").value].text}
+function run(){drawChart();drawSoil();info()}
+["plant","soil","hum","nit"].forEach(id=>el(id).addEventListener("input",e=>{
+  if(id==="hum")el("humV").innerHTML=e.target.value+"&nbsp;%";
+  if(id==="nit")el("nitV").innerHTML=e.target.value+"&nbsp;ppm";
+  run();
+}));
+el("horizon").addEventListener("click",e=>{
+  const c=e.target.closest(".kimi-chip"); if(!c)return;
+  months=+c.dataset.m;
+  el("horizon").querySelectorAll(".kimi-chip").forEach(x=>x.setAttribute("aria-pressed",x===c?"true":"false"));
+  run();
+});
+el("run").addEventListener("click",run);
+el("refresh").addEventListener("click",run);
+run();
+</script>
+</body>
+</html>

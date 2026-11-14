@@ -41,7 +41,8 @@ class ProductoForm(forms.ModelForm):
 class ProyectoForm(forms.ModelForm):
     class Meta:
         model = Proyecto
-        fields = ['nombre', 'slug', 'descripcion', 'url_demo', 'imagen', 'destacado']
+        fields = ['nombre', 'slug', 'descripcion', 'url_demo', 'imagen', 'destacado',
+                  'video', 'video_url']
 
 
 class CompraForm(forms.ModelForm):
