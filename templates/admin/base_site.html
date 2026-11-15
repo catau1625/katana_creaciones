@@ -1,62 +1,61 @@
 {% extends "admin/base_site.html" %}
-{% load static %}
 
 {% block title %}⚔️ Katana Admin — {{ title }}{% endblock %}
 
 {% block extrastyle %}
 {{ block.super }}
 <style>
-/* Tema violeta oscuro para Django Admin — Katana Creaciones Web */
+/* Tema oscuro esmeralda+naranja para Django Admin — estilo actual de katanacreacionesweb.cl */
 :root {
-    --primary: #8B5CF6;
-    --secondary: #6D28D9;
-    --accent: #A78BFA;
-    --primary-fg: #FFFFFF;
+    --primary: #34D399;
+    --secondary: #2FA97F;
+    --accent: #F69D41;
+    --primary-fg: #0F0F18;
 
-    --body-fg: #EDE9FE;
-    --body-bg: #0A0613;
-    --body-quiet-color: #9D94B8;
-    --body-loud-color: #EDE9FE;
+    --body-fg: #F1EFFA;
+    --body-bg: #0F0F18;
+    --body-quiet-color: #9C96BD;
+    --body-loud-color: #F1EFFA;
 
-    --header-color: #EDE9FE;
+    --header-color: #F1EFFA;
     --header-branding-color: #FFFFFF;
-    --header-bg: linear-gradient(135deg, #6D28D9, #4C1D95);
-    --header-link-color: #DDD0FB;
+    --header-bg: linear-gradient(135deg, #0A2E1E, #0F0F18);
+    --header-link-color: #A7F3D0;
 
-    --breadcrumbs-fg: #C4B5FD;
-    --breadcrumbs-link-fg: #EDE9FE;
-    --breadcrumbs-bg: #160B2E;
+    --breadcrumbs-fg: #82E6C7;
+    --breadcrumbs-link-fg: #F1EFFA;
+    --breadcrumbs-bg: #14251E;
 
-    --link-fg: #A78BFA;
-    --link-hover-color: #C4B5FD;
+    --link-fg: #5BD1AC;
+    --link-hover-color: #82E6C7;
     --link-selected-fg: #FFFFFF;
 
-    --hairline-color: rgba(167, 139, 250, .18);
-    --border-color: rgba(167, 139, 250, .22);
+    --hairline-color: rgba(91, 209, 172, .18);
+    --border-color: rgba(91, 209, 172, .22);
 
     --error-fg: #FCA5A5;
-    --message-success-bg: rgba(52, 211, 153, .18);
-    --message-warning-bg: rgba(251, 191, 36, .18);
-    --message-error-bg: rgba(248, 113, 113, .18);
+    --message-success-bg: rgba(52, 211, 153, .16);
+    --message-warning-bg: rgba(246, 157, 65, .16);
+    --message-error-bg: rgba(232, 96, 90, .16);
 
-    --darkened-bg: #120A22;
-    --selected-bg: rgba(139, 92, 246, .35);
-    --selected-row: rgba(139, 92, 246, .22);
+    --darkened-bg: #13131E;
+    --selected-bg: rgba(52, 211, 153, .28);
+    --selected-row: rgba(52, 211, 153, .16);
 
-    --button-fg: #FFFFFF;
-    --button-bg: #8B5CF6;
-    --button-hover-bg: #7C3AED;
-    --default-button-bg: #6D28D9;
-    --default-button-hover-bg: #5B21B6;
-    --close-button-bg: #3B1A6E;
-    --close-button-hover-bg: #4C1D95;
+    --button-fg: #0F0F18;
+    --button-bg: #34D399;
+    --button-hover-bg: #5BD1AC;
+    --default-button-bg: #2FA97F;
+    --default-button-hover-bg: #34D399;
+    --close-button-bg: #1B1B28;
+    --close-button-hover-bg: #2A2A3C;
 
-    --delete-button-bg: #B91C1C;
-    --delete-button-hover-bg: #991B1B;
+    --delete-button-bg: #E23671;
+    --delete-button-hover-bg: #B91E57;
 
-    --object-tools-fg: #FFFFFF;
-    --object-tools-bg: #241045;
-    --object-tools-hover-bg: #6D28D9;
+    --object-tools-fg: #0F0F18;
+    --object-tools-bg: #F69D41;
+    --object-tools-hover-bg: #F7A040;
 
     --font-family-primary: 'Inter', 'Segoe UI', system-ui, sans-serif;
     --font-family-monospace: ui-monospace, 'SF Mono', Menlo, monospace;
@@ -65,61 +64,65 @@
 /* Forzar modo oscuro incluso si el SO está en modo claro */
 @media (prefers-color-scheme: light) {
     :root {
-        --body-fg: #EDE9FE;
-        --body-bg: #0A0613;
-        --darkened-bg: #120A22;
+        --body-fg: #F1EFFA;
+        --body-bg: #0F0F18;
+        --darkened-bg: #13131E;
     }
 }
 
-html, body { background: #0A0613; }
+html, body { background: #0F0F18; }
 
 #header {
-    background: linear-gradient(135deg, #6D28D9, #4C1D95);
+    background: linear-gradient(135deg, #0A2E1E, #0F0F18);
     color: #FFFFFF;
 }
 #branding h1 { font-weight: 800; letter-spacing: -.02em; }
+#user-tools a { color: #A7F3D0; }
 
 .module h2, .module caption, .inline-group h2 {
-    background: #241045;
-    color: #C4B5FD;
+    background: #14251E;
+    color: #82E6C7;
 }
 .module, .inline-group {
-    border: 1px solid rgba(167, 139, 250, .22);
+    border: 1px solid rgba(91, 209, 172, .22);
     border-radius: 10px;
     overflow: hidden;
 }
-#changelist .results thead th { background: #1B0D38; }
+#changelist .results thead th { background: #13131E; }
 
 input, textarea, select, .form-row .vTextField {
-    background: #160B2E !important;
-    color: #EDE9FE !important;
-    border: 1px solid rgba(167, 139, 250, .3) !important;
+    background: #1B1B28 !important;
+    color: #F1EFFA !important;
+    border: 1px solid rgba(91, 209, 172, .3) !important;
     border-radius: 8px;
 }
 input:focus, textarea:focus, select:focus {
-    border-color: #8B5CF6 !important;
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, .25) !important;
+    border-color: #34D399 !important;
+    box-shadow: 0 0 0 3px rgba(52, 211, 153, .22) !important;
+    outline: none;
 }
 
 .button, input[type=submit], input[type=button], .submit-row input, a.button {
-    background: #8B5CF6;
+    background: #34D399;
+    color: #0F0F18;
     border-radius: 8px;
     font-weight: 600;
 }
 .button:hover, input[type=submit]:hover, input[type=button]:hover, a.button:hover {
-    background: #7C3AED;
+    background: #5BD1AC;
 }
 .button.default, input[type=submit].default, .submit-row input.default {
-    background: #6D28D9;
+    background: #2FA97F;
     border: none;
 }
 .button.default:hover, input[type=submit].default:hover {
-    background: #5B21B6;
+    background: #34D399;
 }
 
-.selector select { background: #160B2E; color: #EDE9FE; }
+.selector select { background: #1B1B28; color: #F1EFFA; }
 div.breadcrumbs { border-radius: 0; }
-.login #container { border: 1px solid rgba(167,139,250,.25); border-radius: 14px; }
+.login #container { border: 1px solid rgba(91,209,172,.25); border-radius: 14px; background: #1B1B28; }
+.login #container .form-row label { color: #F1EFFA; }
 </style>
 {% endblock %}
 
